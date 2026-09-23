@@ -31,9 +31,10 @@ export interface Facility {
   label?: string // 表示名の上書き（kind 既定ラベルを使わない場合）
 }
 
-/** セルに入る中身。人 or 設備 or 空 */
+/** セルに入る中身。人 or 設備 or 空 or 通路 */
 export type CellContent =
   | { type: 'empty' }
+  | { type: 'aisle' } // 通路（枠線なし・薄グレー・人を置けない）
   | { type: 'person'; personId: string }
   | { type: 'facility'; facilityId: string }
 
@@ -42,13 +43,26 @@ export interface Cell {
   row: number
   col: number
   content: CellContent
+  /** 結合したときの占有列数（既定1）。マスターセルのみ >1 を持つ */
+  colSpan?: number
+  /** 結合したときの占有行数（既定1） */
+  rowSpan?: number
+  /** 他セルの結合に覆われている（描画しない） */
+  hidden?: boolean
 }
+
+export const DEFAULT_CELL_W = 96
+export const DEFAULT_CELL_H = 64
 
 export interface Grid {
   rows: number
   cols: number
   /** rows*cols 個。並びは row-major。欠けたセルは empty で埋める */
   cells: Cell[]
+  /** 各列の幅(px)。省略時は DEFAULT_CELL_W。通路列を細くするのに使う */
+  colWidths?: number[]
+  /** 各行の高さ(px)。省略時は DEFAULT_CELL_H */
+  rowHeights?: number[]
 }
 
 /** プロジェクト全体 = .seat ファイルの中身そのもの */

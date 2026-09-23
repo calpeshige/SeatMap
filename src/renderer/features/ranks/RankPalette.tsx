@@ -49,7 +49,9 @@ export function RankPalette() {
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && submit()}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && !e.nativeEvent.isComposing) submit()
+          }}
           placeholder="階級名を追加"
           className="min-w-0 flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
         />

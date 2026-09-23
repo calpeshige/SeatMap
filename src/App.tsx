@@ -81,6 +81,9 @@ export default function App() {
     const to = parseCellId(overId)
     if (!to) return
 
+    const target = getCell(project.grid, to.row, to.col)
+    if (!target || target.hidden || target.content.type === 'aisle') return
+
     if (info.source === 'cell') {
       swapCells({ row: info.row, col: info.col }, to)
     } else {
@@ -100,7 +103,7 @@ export default function App() {
       onDragEnd={onDragEnd}
       onDragCancel={() => setActivePersonId(null)}
     >
-      <div className="flex h-full flex-col">
+      <div className="no-print flex h-full flex-col">
         <TopToolbar />
         <div className="flex min-h-0 flex-1">
           {/* 左ペイン */}
@@ -110,7 +113,7 @@ export default function App() {
           </aside>
 
           {/* 中央: グリッドキャンバス */}
-          <main className="min-w-0 flex-1 overflow-auto bg-gray-50 p-4">
+          <main className="no-print min-w-0 flex-1 overflow-auto bg-gray-50 p-4">
             <SeatGrid />
           </main>
 

@@ -47,3 +47,33 @@ describe('swapCells', () => {
     expect(getCell(p.grid, 0, 0)?.content).toEqual({ type: 'person', personId: a })
   })
 })
+
+describe('mergeCell 方向', () => {
+  beforeEach(reset)
+
+  it('左と結合すると左のセルがマスターになる', () => {
+    const s = useSeatStore.getState()
+    s.mergeCell({ row: 1, col: 1 }, 'left')
+    const p = useSeatStore.getState().project
+    expect(getCell(p.grid, 1, 0)?.colSpan).toBe(2)
+    expect(getCell(p.grid, 1, 1)?.hidden).toBe(true)
+  })
+
+  it('上と結合すると上のセルがマスターになる', () => {
+    const s = useSeatStore.getState()
+    s.mergeCell({ row: 1, col: 1 }, 'up')
+    const p = useSeatStore.getState().project
+    expect(getCell(p.grid, 0, 1)?.rowSpan).toBe(2)
+    expect(getCell(p.grid, 1, 1)?.hidden).toBe(true)
+  })
+
+  it('下と結合してから解除で元に戻る', () => {
+    const s = useSeatStore.getState()
+    s.mergeCell({ row: 0, col: 0 }, 'down')
+    expect(getCell(useSeatStore.getState().project.grid, 0, 0)?.rowSpan).toBe(2)
+    s.unmergeCell({ row: 0, col: 0 })
+    const p = useSeatStore.getState().project
+    expect(getCell(p.grid, 0, 0)?.rowSpan).toBe(1)
+    expect(getCell(p.grid, 1, 0)?.hidden).toBeFalsy()
+  })
+})

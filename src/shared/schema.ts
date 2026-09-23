@@ -33,6 +33,7 @@ const facilitySchema = z.object({
 
 const cellContentSchema = z.union([
   z.object({ type: z.literal('empty') }),
+  z.object({ type: z.literal('aisle') }),
   z.object({ type: z.literal('person'), personId: z.string() }),
   z.object({ type: z.literal('facility'), facilityId: z.string() }),
 ])
@@ -41,12 +42,24 @@ const cellSchema = z.object({
   row: z.number(),
   col: z.number(),
   content: cellContentSchema,
+  colSpan: z.number().int().positive().optional(),
+  rowSpan: z.number().int().positive().optional(),
+  hidden: z.boolean().optional(),
 })
 
 const gridSchema = z.object({
   rows: z.number().int().positive(),
   cols: z.number().int().positive(),
   cells: z.array(cellSchema),
+  colWidths: z.array(z.number()).optional(),
+  rowHeights: z.array(z.number()).optional(),
+})
+
+/** レイアウトテンプレート（人を含まない: グリッド構成・階級・設備のみ） */
+export const seatTemplateSchema = z.object({
+  grid: gridSchema,
+  ranks: z.array(rankSchema),
+  facilities: z.array(facilitySchema),
 })
 
 export const seatProjectSchema = z.object({

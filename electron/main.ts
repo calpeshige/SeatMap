@@ -26,6 +26,19 @@ function createWindow(): void {
   })
 
   if (VITE_DEV_SERVER_URL) {
+    // 開発時のみ、レンダラのログ/読込失敗を親プロセスの stdout に流す
+    win.webContents.on('console-message', (_e, level, message, line, sourceId) => {
+      console.log(`[renderer:${level}] ${message} (${sourceId}:${line})`)
+    })
+    win.webContents.on('did-fail-load', (_e, code, desc, url) => {
+      console.log(`[did-fail-load] ${code} ${desc} ${url}`)
+    })
+    win.webContents.on('render-process-gone', (_e, details) => {
+      console.log(`[render-gone] ${JSON.stringify(details)}`)
+    })
+    win.webContents.on('preload-error', (_e, p, err) => {
+      console.log(`[preload-error] ${p} ${String(err)}`)
+    })
     void win.loadURL(VITE_DEV_SERVER_URL)
   } else {
     void win.loadFile(path.join(__dirname, '../dist/index.html'))

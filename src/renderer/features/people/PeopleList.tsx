@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { useDraggable } from '@dnd-kit/core'
+import { useShallow } from 'zustand/react/shallow'
 import type { Person } from '@shared/types'
 import { rankColor, selectUnplacedPeople, useSeatStore } from '@renderer/stores/useSeatStore'
 import { PersonChip } from '@renderer/features/grid/PersonChip'
 
 export function PeopleList() {
-  const unplaced = useSeatStore(selectUnplacedPeople)
+  const unplaced = useSeatStore(useShallow(selectUnplacedPeople))
   const addPerson = useSeatStore((s) => s.addPerson)
   const [name, setName] = useState('')
 
@@ -25,7 +26,9 @@ export function PeopleList() {
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && submit()}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && !e.nativeEvent.isComposing) submit()
+          }}
           placeholder="名前を追加"
           className="min-w-0 flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
         />
@@ -50,6 +53,8 @@ export function PeopleList() {
 
 function UnplacedPerson({ person }: { person: Person }) {
   const project = useSeatStore((s) => s.project)
+  const selectPerson = useSeatStore((s) => s.selectPerson)
+  const selected = useSeatStore((s) => s.selectedPersonId === person.id)
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `drag:list:${person.id}`,
     data: { source: 'list', personId: person.id },
@@ -61,7 +66,10 @@ function UnplacedPerson({ person }: { person: Person }) {
       ref={setNodeRef}
       {...listeners}
       {...attributes}
-      className={`h-12 cursor-grab rounded border border-gray-200 ${isDragging ? 'opacity-30' : ''}`}
+      onClick={() => selectPerson(person.id)}
+      className={`h-12 cursor-grab overflow-hidden rounded border ${
+        selected ? 'border-blue-500 outline outline-2 outline-blue-500' : 'border-gray-200'
+      } ${isDragging ? 'opacity-30' : ''}`}
     >
       <PersonChip person={person} color={color} compact />
     </li>

@@ -12,7 +12,7 @@ export function PersonChip({
 }) {
   return (
     <div
-      className={`flex h-full w-full flex-col items-center justify-center rounded ${
+      className={`flex h-full w-full flex-col items-center justify-center ${
         compact ? 'px-2 py-1' : 'px-1'
       }`}
       style={{ backgroundColor: color ?? '#ffffff' }}
