@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background-color: #f3f4f6;
+  color: #111827;
+  font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Segoe UI', sans-serif;
+  overflow: hidden;
+}
+
+/* 印刷用グリッドは画面外に描画しておく（html-to-image で PNG 化するため display:none にはしない） */
+.printable-root {
+  position: absolute;
+  left: -99999px;
+  top: 0;
+  background: #fff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* 印刷時: 画面UIを隠し、印刷用グリッドだけを通常位置に出す */
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 8mm;
+  }
+  body {
+    overflow: visible;
+    background: #fff;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .printable-root {
+    position: static;
+    left: 0;
+  }
+  .printable-root * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "SeatMap",
+  "display_name": "SeatMap",
+  "category": "desktop",
+  "platforms": ["macos", "windows"],
+  "bundle_id": "net.calpediem.SeatMap",
+  "default_icon_target": "macos_app_icon",
+  "github": "https://github.com/calpeshige/SeatMap",
+  "notes": "Electron + Vite + React + TS の座席表エディタ。グリッド配置・階級ごとの色分け・dnd-kit で人のドラッグ入れ替え・.seat(JSON) 保存/読込・印刷/PDF/PNG出力。Win/Mac 両対応 (electron-builder dmg/nsis)。データは端末内完結・外部通信なし。"
+}
